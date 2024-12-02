@@ -1,4 +1,5 @@
 use std::cmp;
+use std::collections::HashMap;
 
 // Day 1: Historian Hysteria
 // https://adventofcode.com/2024/day/1
@@ -1008,6 +1009,7 @@ fn main() {
 
     let mut first_list: Vec<i32> = Vec::new();
     let mut second_list: Vec<i32> = Vec::new();
+    let mut second_list_duplicates = HashMap::new();
 
     for line in input.lines() {
         let mut numbers = line
@@ -1017,6 +1019,7 @@ fn main() {
         if let (Some(first), Some(second)) = (numbers.next(), numbers.next()) {
             first_list.push(first);
             second_list.push(second);
+            *second_list_duplicates.entry(second).or_insert(0) += 1;
         }
     }
 
@@ -1024,12 +1027,15 @@ fn main() {
     second_list.sort();
 
     let mut distance_sum = 0;
+    let mut similarity_sum = 0;
     for i in 0..first_list.len() {
         let first = first_list[i];
         let second = second_list[i];
 
         distance_sum += cmp::max(first, second) - cmp::min(first, second);
+        similarity_sum += first * *second_list_duplicates.get(&first).unwrap_or(&0);
     }
 
     println!("distance sum = {}", distance_sum);
+    println!("similarity_sum = {}", similarity_sum);
 }
